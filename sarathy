@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Mark Maintenance System</title>
+</head>
+<body>
+    <?php
+    if (isset($_POST['submit'])) {
+        $name = $_POST['name'];
+        $marks = $_POST['marks'];
+
+        // Connect to the database
+        $conn = mysqli_connect("localhost", "username", "password", "database_name");
+
+        // Check connection
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
+
+        // Insert the data into the database
+        $sql = "INSERT INTO students (name, marks) VALUES ('$name', $marks)";
+        if (mysqli_query($conn, $sql)) {
+            echo "Record inserted successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
+
+        // Close the database connection
+        mysqli_close($conn);
+    }
+    ?>
+    
+    <h2>Enter Student Marks</h2>
+    <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required><br><br>
+        
+        <label for="marks">Marks:</label>
+        <input type="number" name="marks" id="marks" required><br><br>
+        
+        <input type="submit" name="submit" value="Submit">
+    </form>
+
+    <h2>Student Marks</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Marks</th>
+        </tr>
+        <?php
+        // Connect to the database
+        $conn = mysqli_connect("localhost", "username", "password", "database_name");
+
+        // Check connection
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
+
+        // Fetch student marks from the database
+        $sql = "SELECT * FROM students";
+        $result = mysqli_query($conn, $sql);
+
+        // Display student marks
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo "<tr>";
+            echo "<td>" . $row['id'] . "</td>";
+            echo "<td>" . $row['name'] . "</td>";
+            echo "<td>" . $row['marks'] . "</td>";
+            echo "</tr>";
+        }
+
+        // Close the database connection
+        mysqli_close($conn);
+        ?>
+    </table>
+</body>
+</html>
